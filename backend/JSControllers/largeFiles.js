@@ -2,7 +2,7 @@
 const fs = require("fs");
 const path = require('path');
 
-//Retrieve a list of files which are >100mb in the directory given by directoryPath
+//Retrieve a list of files which are >250mb in the directory given by directoryPath
 function identifyLargeFilesSync(directoryPath, maxSizeInBytes) {
     try {
         const largeFiles = [];

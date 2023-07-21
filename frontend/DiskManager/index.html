@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Disk Space Pie Chart</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+            margin: 20px auto;
+        }
+
+        .file-item {
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .folder-icon::before {
+            content: url("folder-icon.png");
+            margin-right: 5px;
+        }
+
+        .pdf-icon::before {
+            content: url("");
+            margin-right: 5px;
+            height: 20px;
+            width: 20px;
+        }
+
+        .image-icon::before {
+            content: url("image-icon.png");
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container text-center">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-secondary mx-2" id="fileExplorer">File Explorer</button>
+            <button type="button" class="btn btn-secondary mx-2" id="driveUsage">Check drive usage</button>
+            <button type="button" class="btn btn-secondary mx-2 " id="duplicateCheck">Check duplicate Files</button>
+            <button type="button" class="btn btn-secondary mx-2 " id="largeFiles">Check large files</button>
+            <button type="button" class="btn btn-secondary mx-2 " id="extensionSearch">Search files by
+                extension</button>
+        </div>
+    </div>
+    <script>
+        localStorage.setItem('stack', JSON.stringify([]));
+        document.getElementById('driveUsage').addEventListener('click', () => {
+            document.getElementsByName('myframe')[0].setAttribute('src', 'diskUsage.html')
+        });
+        document.getElementById('fileExplorer').addEventListener('click', () => {
+            localStorage.setItem('stack', JSON.stringify([]));
+            document.getElementsByName('myframe')[0].setAttribute('src', 'navigator.html')
+        });
+        document.getElementById('duplicateCheck').addEventListener('click', () => {
+            localStorage.setItem('stack', JSON.stringify([]));
+            document.getElementsByName('myframe')[0].setAttribute('src', 'duplicate.html')
+        });
+        document.getElementById('largeFiles').addEventListener('click', () => {
+            localStorage.setItem('stack', JSON.stringify([]));
+            document.getElementsByName('myframe')[0].setAttribute('src', 'large.html')
+        });
+        document.getElementById('extensionSearch').addEventListener('click', () => {
+            localStorage.setItem('stack', JSON.stringify([]));
+            document.getElementsByName('myframe')[0].setAttribute('src', 'extension.html')
+        });
+    </script>
+    <iframe name="myframe" src="navigator.html" class="vh-100 vw-100"></iframe>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+    crossorigin="anonymous"></script>
+
+</html>

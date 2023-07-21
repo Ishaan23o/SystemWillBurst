@@ -1,0 +1,67 @@
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<div class="container">
+    <center>
+        <h1>Disk Space Usage</h1>
+        <div style="display:flex;height:350px;width:600px;place-items:center">
+            <canvas id="diskSpaceChart1" class="" width="250" height="350"></canvas>
+            <canvas id="diskSpaceChart2" width="250" height="350"></canvas>
+        </div>
+        <h1>Disk Details</h1>
+        <div id="baap">
+        </div>
+    </center>
+</div>
+<script>
+    fetch('http://127.0.0.1:2000/getDisks').then(response => response.json())
+        .then(dataDrive => {
+            dataDrive = dataDrive.driveArr;
+            let canvases = ['diskSpaceChart1', 'diskSpaceChart2'];
+            let count = 0;
+            for (let k of canvases) {
+                let item = dataDrive[count].drive;
+                const footer = (tooltipItems) => {
+                    return item + " Drive Usage";
+                };
+                const ctx = document.getElementById(k).getContext('2d');
+                const diskChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['free', 'used'],
+                        datasets: [{
+                            data: [dataDrive[count].free, dataDrive[count].total - dataDrive[count].free],
+                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        title: {
+                            display: true,
+                            text: 'Disk Space Usage'
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index',
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    footer: footer,
+                                }
+                            }
+                        }
+                    }
+                });
+                count++;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    fetch('http://localhost:2000/getDiskDetails').then(response => response.json()).then(data => {
+        document.getElementById('baap').innerHTML += "<h2> Disk type: " + data.type + " </h2>";
+        document.getElementById('baap').innerHTML += "<h2> Disk size: " + Math.round(data.size / Math.pow(2, 30)) + " GB</h2>";
+    })
+</script>

@@ -39,4 +39,39 @@ function findDuplicateFilesSync(directoryPath) {
     }
 }
 
-module.exports = { findDuplicateFilesSync, getFileChecksumSync }
+//Retrieves all files inside the directories which are duplicates of each other.
+function findDuplicateFilesIncludeSync(directoryPath, curr = 0) {
+    try {
+        let fileChecksums = {};
+        //Get all files in current directory( including subdirectories because of large time complexity).
+        const { files, folders } = filesNFolders.getFilesAndFoldersSync(directoryPath);
+        //Match checksum, extension and size.
+        for (const filePath of files) {
+            const fileMetaData = fs.statSync(filePath);
+            let checksum = getFileChecksumSync(filePath);
+            checksum += "_" + fileMetaData.size + "_" + path.extname(filePath).toLowerCase();
+            if (!fileChecksums[checksum]) fileChecksums[checksum] = [];
+            fileChecksums[checksum] = [...fileChecksums[checksum], filePath];
+        }
+        for (let folder of folders) {
+            let x = findDuplicateFilesIncludeSync(folder, 1);
+            for (let k in x) {
+                for (let y of x[k]) {
+                    if (!fileChecksums[k]) fileChecksums[k] = [];
+                    fileChecksums[k] = [...fileChecksums[k], y];
+                }
+            }
+        }
+        if (!curr) {
+            for (let key in fileChecksums) {
+                if (fileChecksums[key].length <= 1) delete fileChecksums[key];
+            }
+        }
+        return fileChecksums;
+    } catch (err) {
+        console.error('Error detecting duplicate files:', err);
+        return { message: "There was some error" };
+    }
+}
+
+module.exports = { findDuplicateFilesSync, getFileChecksumSync, findDuplicateFilesIncludeSync }

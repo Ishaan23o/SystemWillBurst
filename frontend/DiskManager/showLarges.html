@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Large Files Result</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f2f2f2;
+        }
+
+        .header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .main-container {
+            margin: 20px;
+        }
+
+        .container-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .file-card {
+            background-color: rgb(234, 232, 234);
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .file-icon {
+            font-size: 24px;
+            margin-right: 10px;
+            color: #28a745;
+        }
+
+        .file-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .file-size {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container container">
+        <div class="container-card" id="container-card">
+        </div>
+    </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script>
+    let stack = JSON.parse(localStorage.getItem("stack"));
+    let data = (stack.length ? stack[stack.length - 1] : '');
+    let x = 1;
+    const addGroup = (Data) => {
+        const dups = document.getElementById('container-card');
+        const cardBody = document.createElement('div'); cardBody.setAttribute('class', 'file-card col-12');
+        const fileGroup = document.createElement('div'); fileGroup.setAttribute('class', 'file-info');
+        let image = document.createElement('img');
+        image.setAttribute('src', 'https://th.bing.com/th/id/OIP.t7ly-kycesSh5XlD78SMDAHaKB?w=140&h=190&c=7&r=0&o=5&dpr=1.4&pid=1.7');
+        image.setAttribute('style', 'height:30px;');
+        const div2 = document.createElement('div'); div2.setAttribute('class', 'mx-3');
+        const div3 = document.createElement('div'); div3.setAttribute('class', 'file-name'); div3.innerText = Data.filePath;
+        const div4 = document.createElement('div'); div4.setAttribute('class', 'file-size'); div4.innerText = Math.round(Data.size / Math.pow(2, 20)) + "MB";
+        div2.appendChild(div3);
+        div2.appendChild(div4);
+        fileGroup.appendChild(image);
+        fileGroup.appendChild(div2);
+        let delButton = document.createElement('button');
+        delButton.setAttribute('class', 'btn btn-danger');
+        delButton.addEventListener('click', () => {
+            if (confirm('Do you really want to delete this file?')) {
+                fetch('http://localhost:2000/deleteFiles', {
+                    method: "DELETE",
+                    mode: "cors",
+                    cache: "no-cache",
+                    credentials: "same-origin",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    redirect: "follow",
+                    referrerPolicy: "no-referrer",
+                    body: JSON.stringify({ arr: [Data.filePath] }),
+                }).then(response => response.json()).then(data => {
+                    if (data) alert("File Deleted Successfully!");
+                    else alert("Failure to delete file");
+                    window.location.reload();
+                })
+            };
+        });
+        delButton.innerHTML += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/></svg > ';
+        cardBody.appendChild(fileGroup);
+        cardBody.appendChild(delButton);
+        dups.appendChild(cardBody);
+    }
+    fetch('http://localhost:2000/getLargeFiles', {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify({ path: data }),
+    }).then(response => response.json()).then(data => {
+        for (let k in data) addGroup(data[k]);
+    });
+</script>
+
+</html>

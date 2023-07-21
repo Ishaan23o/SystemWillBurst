@@ -1,5 +1,7 @@
+const path = require('path');
 
 const child = require('child_process');
+const { getFilesAndFoldersSync } = require('./filesAndFolders');
 
 //Delete all selected files
 const deleteFiles = (arr) => {
@@ -15,12 +17,11 @@ const deleteFiles = (arr) => {
 }
 
 //Delete all selected files
-const deleteFilesByExtension = (extension) => {
+const deleteFilesByExtension = (directoryPath, extension) => {
     try {
-        //let arr =
-        for (let filepath of arr) {
-            child.execSync('del ' + filepath);
-        }
+        deleteFiles(getFilesAndFoldersSync(directoryPath).files.filter((file) =>
+            path.extname(file).toLowerCase() === extension.toLowerCase()
+        ))
         return true;
     } catch (err) {
         console.log("Error while deleting files " + err);

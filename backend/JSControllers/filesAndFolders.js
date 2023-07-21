@@ -8,8 +8,9 @@ function getFilesAndFoldersSync(directoryPath) {
         const files = [];
         const folders = [];
         for (const content of Everything) {
+
+            const contentPath = path.join(directoryPath, content);
             try {
-                const contentPath = path.join(directoryPath, content);
                 const stats = fs.statSync(contentPath);
                 if (stats.isFile()) {
                     files.push(contentPath);
@@ -20,6 +21,7 @@ function getFilesAndFoldersSync(directoryPath) {
 
             }
         }
+        folders.map(elem => elem + '\\');
         return {
             files,
             folders,
@@ -70,10 +72,17 @@ function allFilesSync(directoryPath, maxSizeInBytes) {
 function findFilesByExtensionSync(directoryPath, extension) {
     try {
         const files = allFilesSync(directoryPath);
-        const filesWithExtension = files.filter((file) =>
+        let filesWithExtension = files.filter((file) =>
             path.extname(file.filePath).toLowerCase() === extension.toLowerCase()
         );
-        return filesWithExtension.map((file) => path.join(directoryPath, file.filePath));
+        filesWithExtension = filesWithExtension.map((file) => file.filePath);
+        for (let k in filesWithExtension) {
+            filesWithExtension[k] = {
+                filePath: filesWithExtension[k],
+                size: fs.statSync(`${filesWithExtension[k]}`).size
+            }
+        }
+        return filesWithExtension;
     } catch (err) {
         console.error('Error finding files by extension:', err);
         return [];
