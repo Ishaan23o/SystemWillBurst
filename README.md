@@ -1,6 +1,6 @@
 # SystemWillBurst
 System Requirements:
-1) Desktop Development C++ Visual Studio is installed.
+1) Visual Studio with Desktop Development C++ is installed.
 2) Node js is installed.
 
 Steps to Run(Requires node.js installed):
