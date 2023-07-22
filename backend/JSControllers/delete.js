@@ -35,14 +35,14 @@ const deleteTemporaryFolders = (arr) => {
         const { files, folders } = getFilesAndFoldersSync(arr[0]);
         for (let folderpath of folders) {
             try {
-                fs.rmSync(folderpath, { force: true });
+                fs.rmSync(folderpath, {recursive:true, force: true });
             } catch (err) {
                 console.log(err);
             }
         }
         for (let filepath of files) {
             try {
-                fs.rmSync(filepath, { force: true });
+                fs.rmSync(filepath, { recursive:true,force: true });
             } catch (err) {
                 console.log(err);
             }
