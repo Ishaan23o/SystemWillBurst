@@ -103,10 +103,16 @@
     let x = 1;
     let checkboxes = [];
     document.getElementById('flexCheckDefault').addEventListener('click', () => {
-        for (let k of checkboxes) {
-            k.click();
+        if (document.getElementById('flexCheckDefault').checked) {
+            for (let k of checkboxes) {
+                if (!k.checked) k.click();
+            }
+        } else {
+            for (let k of checkboxes) {
+                k.click();
+            }
         }
-    })
+    });
     const addGroup = (Data) => {
         const dups = document.getElementById('container-card');
         const cardBody = document.createElement('div'); cardBody.setAttribute('class', 'file-card col-12');
@@ -115,6 +121,9 @@
         const str = Data.filePath;
         checkboxes.push(checkbox);
         checkbox.addEventListener('change', () => {
+            if (!checkbox.checked) {
+                if (document.getElementById('flexCheckDefault').checked) document.getElementById('flexCheckDefault').checked = false;
+            }
             let stack = JSON.parse(localStorage.getItem('delFiles'));
             if (stack.includes(str)) stack.splice(stack.indexOf(str), 1);
             else stack.push(str);

@@ -97,8 +97,14 @@
         const ul = document.createElement('ul'); ul.setAttribute('class', 'file-list');
         const checkboxes = [];
         selectAll.addEventListener('click', () => {
-            for (let k of checkboxes) {
-                k.click();
+            if (selectAll.checked) {
+                for (let k of checkboxes) {
+                    if (!k.checked) k.click();
+                }
+            } else {
+                for (let k of checkboxes) {
+                    k.click();
+                }
             }
         });
         let data = [];
@@ -116,6 +122,9 @@
             const str = k;
             checkboxes.push(checkbox);
             checkbox.addEventListener('change', () => {
+                if (!checkbox.checked) {
+                    if (selectAll.checked) selectAll.checked = false;
+                }
                 let stack = JSON.parse(localStorage.getItem('delFiles'));
                 if (stack.includes(str)) stack.splice(stack.indexOf(str), 1);
                 else stack.push(str);

@@ -49,7 +49,7 @@ const deleteTemporaryFolders = (arr) => {
         }
         return true;
     } catch (err) {
-        console.log("Error while deleting folders " + err);
+        console.log("Error while deleting temporary folders " + err);
         return false;
     }
 }

@@ -5,9 +5,8 @@
 <div class="container">
     <center>
         <h1>Disk Space Usage</h1>
-        <div style="display:flex;height:350px;width:600px;place-items:center">
-            <canvas id="diskSpaceChart1" class="" width="250" height="350"></canvas>
-            <canvas id="diskSpaceChart2" width="250" height="350"></canvas>
+        <div style="display:flex;height:350px;width:600px;place-items:center" id="canvasHolder">
+
         </div>
         <h1>Disk Details</h1>
         <div id="baap">
@@ -19,7 +18,15 @@
     fetch('http://127.0.0.1:2000/getDisks').then(response => response.json())
         .then(dataDrive => {
             dataDrive = dataDrive.driveArr;
-            let canvases = ['diskSpaceChart1', 'diskSpaceChart2'];
+            let x = 0;
+            let str = 'diskSpaceChart';
+            let canvases = [];
+            for (let k in dataDrive) {
+                let curr = str + (x++);
+                canvases.push(curr);
+                const canvas = document.createElement('canvas'); canvas.setAttribute('id', curr);
+                document.getElementById('canvasHolder').appendChild(canvas);
+            }
             let count = 0;
             for (let k of canvases) {
                 let item = dataDrive[count].drive;

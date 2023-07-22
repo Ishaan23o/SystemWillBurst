@@ -63,7 +63,6 @@
         localStorage.setItem('stack', JSON.stringify([]));
         localStorage.setItem('delFiles', JSON.stringify([]));
         document.getElementById('deleteSelect').addEventListener('click', () => {
-            console.log(JSON.parse(localStorage.getItem('delFiles')));
             if (confirm('Do you really want to delete these files?')) {
                 fetch('http://localhost:2000/deleteFiles', {
                     method: "DELETE",
