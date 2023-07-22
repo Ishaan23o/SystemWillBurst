@@ -1,5 +1,6 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <div class="container">
     <center>
@@ -11,6 +12,7 @@
         <h1>Disk Details</h1>
         <div id="baap">
         </div>
+        <button class="btn btn-warning" id="rmtemp">Remove temporary OS files</button>
     </center>
 </div>
 <script>
@@ -63,5 +65,11 @@
     fetch('http://localhost:2000/getDiskDetails').then(response => response.json()).then(data => {
         document.getElementById('baap').innerHTML += "<h2> Disk type: " + data.type + " </h2>";
         document.getElementById('baap').innerHTML += "<h2> Disk size: " + Math.round(data.size / Math.pow(2, 30)) + " GB</h2>";
+    })
+    document.getElementById('rmtemp').addEventListener('click', () => {
+        fetch('http://localhost:2000/rmTemp').then(response => response.json()).then(data => {
+            if (data) alert("Removed non-opened temporary files Successfully!");
+            else alert("Failure to delete files");
+        });
     })
 </script>

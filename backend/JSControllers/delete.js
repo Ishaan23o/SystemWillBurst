@@ -1,5 +1,5 @@
 const path = require('path');
-
+const fs = require('fs');
 const child = require('child_process');
 const { getFilesAndFoldersSync } = require('./filesAndFolders');
 
@@ -7,11 +7,49 @@ const { getFilesAndFoldersSync } = require('./filesAndFolders');
 const deleteFiles = (arr) => {
     try {
         for (let filepath of arr) {
-            child.execSync('del ' + filepath);
+            child.execSync('del "' + filepath + '"');
         }
         return true;
     } catch (err) {
         console.log("Error while deleting files " + err);
+        return false;
+    }
+}
+
+//Delete all selected folders
+const deleteFolders = (arr) => {
+    try {
+        for (let folderpath of arr) {
+            fs.rmSync(folderpath, { recursive: true, force: true });
+        }
+        return true;
+    } catch (err) {
+        console.log("Error while deleting folders " + err);
+        return false;
+    }
+}
+
+//Delete all selected folders
+const deleteTemporaryFolders = (arr) => {
+    try {
+        const { files, folders } = getFilesAndFoldersSync(arr[0]);
+        for (let folderpath of folders) {
+            try {
+                fs.rmSync(folderpath, { force: true });
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        for (let filepath of files) {
+            try {
+                fs.rmSync(filepath, { force: true });
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        return true;
+    } catch (err) {
+        console.log("Error while deleting folders " + err);
         return false;
     }
 }
@@ -30,6 +68,6 @@ const deleteFilesByExtension = (directoryPath, extension) => {
 }
 
 module.exports = {
-    deleteFiles, deleteFilesByExtension
+    deleteFiles, deleteFilesByExtension, deleteFolders, deleteTemporaryFolders
 }
 

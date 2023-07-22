@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Duplicate Files</title>
+    <title>Find Large Files</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .header {
@@ -69,7 +69,10 @@
     <div class="text-center">
         <button onclick="handleLarges()" class="btn btn-warning mt-2" id="checker">Check Large Files here!</button>
     </div>
-
+    <div>
+        <img src="./public/loading.gif" style="display:none;height:50px;margin-left: auto;margin-right: auto;"
+            id="loading" class="mt-2">
+    </div>
     <iframe name="myframe" src="navigator.html" class="vh-100 vw-100"></iframe>
 
     <!-- Bootstrap JS and jQuery -->
@@ -89,6 +92,7 @@
 
 
     const handleLarges = () => {
+        localStorage.setItem('delFiles', JSON.stringify([]));
         document.getElementsByName('myframe')[0].setAttribute('src', 'showLarges.html');
     }
 </script>

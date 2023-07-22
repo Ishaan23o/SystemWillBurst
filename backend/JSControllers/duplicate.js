@@ -2,6 +2,7 @@
 const fs = require("fs");
 const path = require('path');
 const crypto = require('crypto');
+const DiffMatchPatch = require('diff-match-patch').diff_match_patch;
 const filesNFolders = require('./filesAndFolders.js')
 
 //Create a hash of the file
@@ -74,4 +75,38 @@ function findDuplicateFilesIncludeSync(directoryPath, curr = 0) {
     }
 }
 
-module.exports = { findDuplicateFilesSync, getFileChecksumSync, findDuplicateFilesIncludeSync }
+//Retrieves all files inside the directories which are similarity of each other.
+function findSimilarFilesSync(directoryPath) {
+    const dmp = new DiffMatchPatch();
+    const similarityThreshold = 0.90;
+    try {
+        const files = filesNFolders.getFilesAndFoldersSync(directoryPath).files;
+        const similarFiles = [];
+
+        for (let i = 0; i < files.length; i++) {
+            const fileA = files[i];
+            const textA = fs.readFileSync(fileA, 'utf-8')
+            for (let j = i + 1; j < files.length; j++) {
+                const fileB = files[j];
+                const textB = fs.readFileSync(fileB, 'utf-8');
+                const diffs = dmp.diff_main(textA, textB);
+                const levenshteinDistance = dmp.diff_levenshtein(diffs);
+                const similarity = 1 - levenshteinDistance / Math.max(textA.length, textB.length);
+                if (similarity >= similarityThreshold) {
+                    similarFiles.push({
+                        fileA,
+                        fileB,
+                        similarity,
+                    });
+                }
+            }
+        }
+        return similarFiles;
+    } catch (err) {
+        console.error('Error identifying similar files:', err);
+        return [];
+    }
+
+}
+
+module.exports = { findDuplicateFilesSync, getFileChecksumSync, findDuplicateFilesIncludeSync, findSimilarFilesSync }

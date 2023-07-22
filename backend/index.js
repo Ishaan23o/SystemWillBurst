@@ -8,39 +8,52 @@ const filesNFolders = require('./JSControllers/filesAndFolders.js');
 const duplicates = require('./JSControllers/duplicate.js');
 const largeFiles = require('./JSControllers/largeFiles.js');
 const deleteFiles = require('./JSControllers/delete.js');
+const os = require('os');
+const { identifyInefficientFilesSync } = require('./JSControllers/rare.js');
 
 //Middlewares we are using to communicate between our frontend and backend.
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser());
 
-//Threshold set by us for large files(250Mb).
-const maxSizeInBytes = 100000000;
+//Threshold set by us for large files(100Mb).
+const maxSizeInBytes = 104857600;
+const thresholdRare = 90;
 
-//API endpoint for checking duplicate files
+//API endpoint for deleting files by extension
 app.delete("/deleteFilesByExtension", (req, res) => {
     res.send(deleteFiles.deleteFilesByExtension(req.body.path, req.body.extension));
 })
 
-//API endpoint for checking duplicate files
+//API endpoint for deleting file
 app.delete("/deleteFiles", (req, res) => {
     res.send(deleteFiles.deleteFiles(req.body.arr));
-})
+});
 
-//API endpoint for checking duplicate files
+//API endpoint for deleting folders
+app.delete("/deleteFolders", (req, res) => {
+    res.send(deleteFiles.deleteFolders(req.body.arr));
+});
+
+//API endpoint for find files by extension
 app.post("/getFilesByExtension", (req, res) => {
     res.send(filesNFolders.findFilesByExtensionSync(req.body.path, req.body.extension));
 })
 
-//API endpoint for find files by extension
+//API endpoint for get duplicate files
 app.post("/getDuplicateFiles", (req, res) => {
     res.send(duplicates.findDuplicateFilesSync(req.body.path));
-})
+});
 
-//API endpoint for find files by extension include subdirectories.
+//API endpoint for find files duplicate files include subdirectories.
 app.post("/getDuplicateFilesInclude", (req, res) => {
     res.send(duplicates.findDuplicateFilesIncludeSync(req.body.path));
-})
+});
+
+//API endpoint for find files which are similar
+app.post("/getSimilarFiles", (req, res) => {
+    res.send(duplicates.findSimilarFilesSync(req.body.path));
+});
 
 //API endpoint for getting all files and folders
 app.post("/getFilesFolders", (req, res) => {
@@ -70,6 +83,16 @@ app.get("/getDisks", (req, res) => {
     }
     res.status(200).json({ driveArr: y });
 });
+
+//Remove Temporary files
+app.get('/rmtemp', (req, res) => {
+    res.send(deleteFiles.deleteTemporaryFolders(['C:\\Users\\HP\\AppData\\Local\\Temp']));
+});
+
+//Get rarely used files
+app.post('/rarelyUsed', (req, res) => {
+    res.send(identifyInefficientFilesSync(req.body.path, thresholdRare));
+})
 
 //get disk details
 app.get("/getDiskDetails", async (req, res) => res.send((await si.diskLayout())[0]));

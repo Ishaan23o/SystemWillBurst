@@ -11,16 +11,20 @@ function identifyLargeFilesSync(directoryPath, maxSizeInBytes) {
             const Everything = fs.readdirSync(currentPath);
             for (const file of Everything) {
                 const filePath = path.join(currentPath, file);
-                const stats = fs.statSync(filePath);
-                //If a file.
-                if (stats.isFile() && stats.size > maxSizeInBytes) {
-                    largeFiles.push({
-                        filePath,
-                        size: stats.size,
-                    });
-                    //If it is a directory.
-                } else if (stats.isDirectory()) {
-                    traverseDirectorySync(filePath);
+                try {
+                    const stats = fs.statSync(filePath);
+                    //If a file.
+                    if (stats.isFile() && stats.size > maxSizeInBytes) {
+                        largeFiles.push({
+                            filePath,
+                            size: stats.size,
+                        });
+                        //If it is a directory.
+                    } else if (stats.isDirectory()) {
+                        traverseDirectorySync(filePath);
+                    }
+                } catch (err) {
+
                 }
             }
         }

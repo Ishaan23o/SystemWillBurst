@@ -51,7 +51,7 @@
                 body: JSON.stringify({ path: data }),
             }).then(response => response.json()).then(data => {
                 data.folders.map(drive => createfolder(extractLast(drive)));
-                data.files.map(drive => createfile(extractLast(drive)))
+                data.files.map(drive => createfile(extractLast(drive), drive))
             });
         } else {
             fetch('http://localhost:2000/getDisks').then(response => response.json()).then(data => {
