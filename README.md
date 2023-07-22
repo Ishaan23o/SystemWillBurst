@@ -37,6 +37,8 @@ References:
     6. https://www.electronjs.org/docs/latest/
     7. https://nodejs.org/api/child_process.html
     8. https://www.npmjs.com/package/diskusage
+    9. https://stackoverflow.com/questions/935127/how-to-access-parent-iframe-from-javascript
+    10. https://stackoverflow.com/questions/18052762/remove-directory-which-is-not-empty
 
 
 
