@@ -26,7 +26,7 @@ Essential -
 Extra - 
     1. Deleting temporary OS files that are not currently in use.
     2. Finding the files that have not been used since last 90 days.
-    3. Finding similar files using levenshtein distance. It shows files with >=90% similarity.
+    3. Finding similar files that contains .txt,.doc,.csv,.pdf extensions using levenshtein distance. It shows files with >=90% similarity.
     
 References:
     1. https://nodejs.org/api/crypto.html
